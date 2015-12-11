@@ -1,0 +1,16 @@
+preview <- read.table("household_power_consumption.txt", sep = ";", stringsAsFactors = FALSE, na.strings = "?", header = TRUE, nrows = 50)
+classes <- sapply(preview, class)
+df <- read.table("household_power_consumption.txt", sep = ";", stringsAsFactors = FALSE, na.strings = "?", header = TRUE, colClasses = classes)
+dfcomplete <- df[complete.cases(df),]
+dfcomplete$Time <- strptime(paste(dfcomplete$Date, dfcomplete$Time), "%e/%m/%Y %H:%M:%S")
+dfcomplete$Date <- as.Date(dfcomplete$Date, "%e/%m/%Y")
+starttime <- as.Date("01/02/2007", "%e/%m/%Y")
+endtime <- as.Date("02/02/2007", "%e/%m/%Y")
+d <- dfcomplete[(dfcomplete$Date >= starttime & dfcomplete$Date <= endtime), ]
+plot(d$Time, d$Sub_metering_1, type='n', xlab = NA, ylab = "Energy sub metering")
+points(d$Time, d$Sub_metering_1, type='l')
+points(d$Time, d$Sub_metering_2, type='l', col = "red")
+points(d$Time, d$Sub_metering_3, type='l', col = "blue")
+legend("topright", lwd = 1, col = c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), cex = 0.8)
+dev.copy(png, file="plot3.png")
+dev.off()
